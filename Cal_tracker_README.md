@@ -10,7 +10,7 @@ import os
 st.set_page_config(page_title="Calorie Tracker", layout="centered")
 
 # Dark mode toggle
-dark_mode = st.sidebar.checkbox("🌙 Enable Dark Mode", value=False)
+dark_mode = st.sidebar.checkbox(" Enable Dark Mode", value=False)
 
 # CSS styling
 if dark_mode:
@@ -45,7 +45,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🥗 Calorie Tracker")
+st.title(" Calorie Tracker")
 
 meals = ["Breakfast", "Lunch", "Dinner", "Snacks"]
 log_file = "calorie_log.csv"
@@ -54,20 +54,20 @@ log_file = "calorie_log.csv"
 if "meal_data" not in st.session_state:
     st.session_state.meal_data = {meal: {"items": "", "calories": 0} for meal in meals}
 
-# 🍽 Meal input
-st.header("🍽 Enter Meals & Calories")
+#  Meal input
+st.header(" Enter Meals & Calories")
 for meal in meals:
     with st.expander(meal):
         st.session_state.meal_data[meal]["items"] = st.text_area(f"{meal} - Food Items", key=f"{meal}_items")
         st.session_state.meal_data[meal]["calories"] = st.number_input(f"{meal} - Calories", min_value=0,
                                                                        key=f"{meal}_calories")
 
-# 📊 Daily summary
-st.header("📊 Daily Summary")
+#  Daily summary
+st.header("Daily Summary")
 total_calories = sum(m["calories"] for m in st.session_state.meal_data.values())
 st.success(f"Total Calories Today: {total_calories} kcal")
 
-with st.expander("📌 View What You Ate Today"):
+with st.expander(" View What You Ate Today"):
     for meal in meals:
         st.subheader(meal)
         items = st.session_state.meal_data[meal]["items"].strip()
@@ -79,8 +79,8 @@ with st.expander("📌 View What You Ate Today"):
         st.markdown(f"**Calories:** {calories} kcal")
         st.markdown("---")
 
-# 💾 Export history
-if st.button("💾 Save Log to History"):
+# Export history
+if st.button(" Save Log to History"):
     today = datetime.now().strftime("%Y-%m-%d")
     row = {
         "Date": today,
@@ -93,20 +93,20 @@ if st.button("💾 Save Log to History"):
         df.to_csv(log_file, mode='a', header=False, index=False)
     else:
         df.to_csv(log_file, index=False)
-    st.success("✅ Today's log saved!")
+    st.success(" Today's log saved!")
 
-# 📈 Calorie trend chart
+# Calorie trend chart
 if os.path.exists(log_file):
-    st.header("📈 Calorie Trend Over Time")
+    st.header(" Calorie Trend Over Time")
     df_log = pd.read_csv(log_file)
     if "Date" in df_log and "Total_Calories" in df_log:
         df_log["Date"] = pd.to_datetime(df_log["Date"])
         df_log = df_log.sort_values("Date")
         st.line_chart(df_log.set_index("Date")["Total_Calories"])
 
-# 📅 View previous logs
+# View previous logs
 if os.path.exists(log_file):
-    st.header("📂 View Past Logs by Date")
+    st.header(" View Past Logs by Date")
     df_log = pd.read_csv(log_file)
     df_log["Date"] = pd.to_datetime(df_log["Date"])
     unique_dates = sorted(df_log["Date"].dt.date.unique(), reverse=True)
@@ -123,8 +123,8 @@ if os.path.exists(log_file):
             st.markdown(f"**Calories:** {calories} kcal")
             st.markdown("---")
 
-# ♻️ Reset data
-if st.button("♻️ Reset Today's Data"):
+#  Reset data
+if st.button("Reset Today's Data"):
     # Clear session state
     st.session_state.meal_data = {meal: {"items": "", "calories": 0} for meal in meals}
 
@@ -136,4 +136,4 @@ if st.button("♻️ Reset Today's Data"):
         df = df[df["Date"] != today]  # Keep only rows not from today
         df.to_csv(log_file, index=False)
 
-    st.success("✅ Today's data has been cleared from both memory and history.")
+    st.success("Today's data has been cleared from both memory and history.")
